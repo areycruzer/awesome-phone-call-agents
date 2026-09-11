@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.4.0 — 2026-09-11 (final repositioning: the citizen call, made testable)
+- Renamed to `emergency-intake-practice` and repositioned around the
+  original thesis: rehearsing the citizen side of an emergency call.
+- The agent self-identifies as an AI demo (never the real 112), carries a
+  real-emergency escape hatch, never dispatches, and captures clarity.
+- Wire format unchanged (task-embedded E.164 + result_schema + metadata,
+  Idempotency-Key), verified live.
+
+## 0.3.0 — 2026-09-11 (repositioning after live provider testing)
+- Discovery: CALL-E's request safety layer declines tasks involving emergency
+  dispatch / emergency-service coordination (422 `call_not_ready`, quoted in
+  SKILL.md). The skill is repositioned from emergency dispatch to authorized
+  non-emergency field coordination (utility/municipal crews) and renamed
+  `field-assignment-relay`. The guardrail is respected, not worked around.
+- Wire format verified against the live `/v1/calls`: E.164 recipient and
+  conversation language embedded in the task text; `result_schema` +
+  `metadata` as structured companions; structured recipient/policy objects
+  rejected (`extra_forbidden`).
+- Script rewritten onto the REST API (create + poll), Idempotency-Key kept.
+- Emergency-domain wording removed across references and examples.
+
 ## Maintainer clarification - 2026-09-11
 - Mask phone-shaped preview/result output without altering the private call request.
 - Omit raw provider transcripts and error details; stop on ambiguous SDK errors.

@@ -1,0 +1,31 @@
+{
+  "emergency_type": {
+    "type": "string",
+    "description": "One short phrase in English for the emergency the person described (for example \"breathing emergency\"). If nothing was described, return \"none\"."
+  },
+  "location": {
+    "type": "string",
+    "description": "The location exactly as the person stated it, as a short string. If no location was stated, return \"unknown\"."
+  },
+  "urgency": {
+    "type": "string",
+    "enum": [
+      "critical",
+      "high",
+      "medium",
+      "low",
+      "unknown"
+    ],
+    "description": "Your assessment of the urgency of what the person described."
+  },
+  "caller_clarity": {
+    "type": "string",
+    "enum": [
+      "clear",
+      "partial",
+      "unclear",
+      "unknown"
+    ],
+    "description": "How clearly the person stated what happened and where."
+  }
+}

@@ -125,7 +125,7 @@ node scripts/practice.mjs --phone "+919999XXXXXX" --participant "test-user" --re
 
 ## Origin
 
-Built into [Kwik 112](https://github.com/areycruzer/kwik-112) (CALL-E hackathon
+Built into [Kwik 112](https://github.com/areycruzer/kwik-relay) (CALL-E hackathon
 2026) — the citizen's emergency call, made testable. Live console:
-https://pulse112-dispatch-ai.vercel.app (the demo call in the voice station
-places this skill's call and files the structured intake as a graded case).
+https://kwik-relay.vercel.app (the demo call in the voice station places this
+skill's call and files the structured intake as a graded case).

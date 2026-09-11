@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.0 — 2026-09-11 (verifiable offline: tests + fixture replay)
+- Shared logic extracted to `scripts/practice-lib.mjs` so the CLI and the test
+  suite cannot drift apart.
+- `scripts/practice.test.mjs`: 13 zero-live-call assertions covering every
+  safety line, the schema shape, normalization honesty, and idempotency.
+- `--fixture` replay mode: reviewers experience the complete output path —
+  completed intake and honest failed-connect — without spending a credit.
+- Synthetic fixtures shaped like observed API responses (no real call data).
+
 ## 0.4.0 — 2026-09-11 (final repositioning: the citizen call, made testable)
 - Renamed to `emergency-intake-practice` and repositioned around the
   original thesis: rehearsing the citizen side of an emergency call.

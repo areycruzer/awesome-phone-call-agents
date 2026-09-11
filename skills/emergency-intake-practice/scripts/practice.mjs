@@ -4,6 +4,7 @@
 // polls to completion. No automatic redial.
 import { parseArgs } from 'node:util';
 import { readFileSync } from 'node:fs';
+import { buildTask, deriveIdempotencyKey, isValidE164, languageFor, RESULT_SCHEMA, summarizeCall } from './practice-lib.mjs';
 
 const { values } = parseArgs({
   options: {
@@ -11,6 +12,7 @@ const { values } = parseArgs({
     participant: { type: 'string' },
     locale: { type: 'string', default: 'hi' },
     real: { type: 'boolean', default: false },
+    fixture: { type: 'string' },
     help: { type: 'boolean', default: false },
   },
 });
@@ -20,23 +22,22 @@ if (values.help || !values.phone || !values.participant) {
   process.exit(values.help ? 0 : 1);
 }
 
-const E164 = /^\+[1-9]\d{6,14}$/;
-if (!E164.test(values.phone)) { console.error('Phone must be E.164 (+country…), and the participant must consent to the practice call.'); process.exit(1); }
+if (!isValidE164(values.phone)) { console.error('Phone must be E.164 (+country…), and the participant must consent to the practice call.'); process.exit(1); }
 
-const LANGS = { hi: 'Hindi', 'en-IN': 'Indian English', ta: 'Tamil', te: 'Telugu', bn: 'Bengali', mr: 'Marathi', pa: 'Punjabi', kn: 'Kannada' };
-const language = LANGS[values.locale] ?? 'Hindi';
+const language = languageFor(values.locale);
+const task = buildTask({ phone: values.phone, participant: values.participant, locale: values.locale });
 
-const RESULT_SCHEMA = JSON.parse(readFileSync(new URL('../references/result-schema.json', import.meta.url), 'utf8'));
+// Fixture replay: the full output path, zero live calls, zero credits.
+if (values.fixture) {
+  const call = JSON.parse(readFileSync(values.fixture, 'utf8'));
+  const out = summarizeCall(call);
+  console.log(`FIXTURE REPLAY — no live call. Fixture: ${values.fixture}\nTask preview: ${task.slice(0, 120)}…\n`);
+  console.log(JSON.stringify(out, null, 2));
+  process.exit(out.phase === 'FAILED' ? 3 : 0);
+}
 
 // Wire format verified against the live /v1/calls endpoint (2026-09-11):
 // E.164 recipient and language live in the task text.
-const task = [
-  `Call ${values.phone} now.`,
-  `You are Kwik, a DEMO emergency-call intake simulator built for a hackathon. The person who answers (${values.participant}) has consented to a practice call — they will play the role of a citizen reporting an emergency.`,
-  `SAFETY FIRST: Begin the call by clearly stating, in ${language}, that you are an AI demonstration and NOT the real 112 emergency service. If at any point the person indicates a real ongoing emergency, immediately tell them to hang up and dial the real emergency number 112.`,
-  `Then run the practice intake in ${language}: ask (1) what happened, (2) where they are, (3) how urgent it is. Ask one question at a time, be calm and reassuring, and confirm the location back to them before finishing. Keep the practice call under three minutes.`,
-  `Do NOT dispatch anyone, do NOT promise help is coming, do NOT claim to be a government service. This is a simulation of intake only.`,
-].join(' ');
 
 if (!values.real) {
   console.log('PREVIEW — no call placed. Exact wire payload:\n');
@@ -48,7 +49,7 @@ if (!process.env.CALLE_API_KEY) { console.error('CALLE_API_KEY is required for -
 
 const BASE = process.env.CALLE_BASE_URL ?? 'https://api.heycall-e.com';
 const H = { Authorization: `Bearer ${process.env.CALLE_API_KEY}`, 'Content-Type': 'application/json' };
-const idem = `kwik-intake-${values.participant}-${new Date().toISOString().slice(0, 13)}`;
+const idem = deriveIdempotencyKey(values.participant);
 
 const res = await fetch(`${BASE}/v1/calls`, {
   method: 'POST',
@@ -74,7 +75,7 @@ for (let i = 0; i < 40; i++) {
     process.exit(3);
   }
   if (OK.has(s)) {
-    console.log(JSON.stringify({ structured_result: cur.structured_result ?? r0.structured_result ?? null, summary: r0.summary ?? cur.summary ?? null }, null, 2));
+    console.log(JSON.stringify(summarizeCall(cur), null, 2));
     process.exit(0);
   }
 }

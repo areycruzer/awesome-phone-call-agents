@@ -87,10 +87,31 @@ and sends a stable `Idempotency-Key` so a replayed command cannot double-call.
    government service.
 5. **No automatic redial.** Missed calls fail honestly back to the operator.
 
+## Self-test — zero live calls, zero credits
+
+```bash
+node --test scripts/practice.test.mjs   # 13 assertions over the task text,
+                                         # schema shape, fixtures, and helpers
+```
+
+Every safety property is testable offline: the self-identification line, the
+real-emergency escape hatch, the no-dispatch constraints, consent naming,
+enum-vs-free-form schema shape, honest failure handling, and idempotency-key
+stability. Fixtures (`references/fixtures/`) are synthetic responses shaped
+like real API payloads observed 2026-09-11 — no real call data.
+
+```bash
+# Replay the full output path without spending a credit:
+node scripts/practice.mjs --phone "+919999112011" --participant ravi \
+  --fixture references/fixtures/completed-intake.fixture.json
+node scripts/practice.mjs --phone "+919999112011" --participant ravi \
+  --fixture references/fixtures/failed-connect.fixture.json   # exit 3: honest failure
+```
+
 ## Setup
 
 ```bash
-export CALLE_API_KEY=...   # server/CLI side only
+export CALLE_API_KEY=...   # server/CLI side only (not needed for tests/fixtures)
 ```
 
 ## Usage

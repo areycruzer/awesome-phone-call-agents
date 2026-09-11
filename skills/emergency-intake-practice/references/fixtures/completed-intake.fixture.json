@@ -1,0 +1,29 @@
+{
+  "$comment": "SYNTHETIC fixture — shaped exactly like a real /v1/calls response observed 2026-09-11. Contains no real call data; phone numbers are standards-reserved fictional.",
+  "id": "call_fixture_completed_intake",
+  "object": "call_task",
+  "status": "completed",
+  "task": "Call +919999112011 now. You are Kwik, a DEMO emergency-call intake simulator…",
+  "recipients": [
+    {
+      "id": "rcp_fixture_0001",
+      "phones": ["+919999112011"],
+      "locale": null,
+      "region": null,
+      "status": "completed",
+      "structured_result": {
+        "emergency_type": "breathing emergency",
+        "location": "Shalimar Bagh B-block, Delhi",
+        "urgency": "critical",
+        "caller_clarity": "partial"
+      },
+      "summary": "The participant reported their mother was not breathing, at Shalimar Bagh B-block. The agent confirmed the location back and assessed the urgency as critical. Clarity was partial — the location needed a repeat.",
+      "attempts": [
+        { "id": "att_fixture_0001", "phone": "+919999112011", "status": "completed", "started_at": "2026-09-11T10:00:00Z", "completed_at": "2026-09-11T10:01:52Z" }
+      ]
+    }
+  ],
+  "failure_code": null,
+  "created_at": "2026-09-11T10:00:00Z",
+  "completed_at": "2026-09-11T10:01:52Z"
+}

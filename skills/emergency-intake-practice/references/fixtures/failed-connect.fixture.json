@@ -1,0 +1,24 @@
+{
+  "$comment": "SYNTHETIC fixture — the honest failure path: call did not connect. Shape matches a real failed /v1/calls response observed 2026-09-11.",
+  "id": "call_fixture_failed_connect",
+  "object": "call_task",
+  "status": "failed",
+  "task": "Call +919999112022 now. You are Kwik, a DEMO emergency-call intake simulator…",
+  "recipients": [
+    {
+      "id": "rcp_fixture_0002",
+      "phones": ["+919999112022"],
+      "locale": null,
+      "region": null,
+      "status": "failed",
+      "structured_result": null,
+      "summary": "The first call did not connect or complete; the recipient may be busy or unavailable.",
+      "attempts": [
+        { "id": "att_fixture_0002", "phone": "+919999112022", "status": "failed", "started_at": "2026-09-11T11:00:00Z", "completed_at": "2026-09-11T11:00:00Z" }
+      ]
+    }
+  ],
+  "failure_code": "call_failed",
+  "created_at": "2026-09-11T11:00:00Z",
+  "completed_at": null
+}
